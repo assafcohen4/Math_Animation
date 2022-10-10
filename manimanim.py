@@ -29,7 +29,7 @@ class BooleanOperatrions(Scene):
                 self.play(FadeIn(arg))
 
         
-        def _show_intersection(intersection: Mobject, text: MathTex, vector: np.array, rotation):
+        def _show_intersection(intersection: Mobject, text: MathTex, vector: np.array, rotation: float):
             self.play(FadeIn(intersection))
             
             intersection_copy = intersection.copy()
@@ -38,7 +38,11 @@ class BooleanOperatrions(Scene):
             self.play(FadeIn(text.next_to(intersection_copy,UP)))
             self.play(FadeOut(intersection))
 
-            
+        def _show_intersections_multiple(intersections: tuple[Mobject], texts: tuple[MathTex],
+        vectors: tuple[np.array],rotations: tuple[float]):
+            for i in range(len(intersections)):
+                _show_intersection(intersections[i],texts[i],vectors[i],rotations[i])
+
         #Enter a vector np.array([x,y,z]) and a rotation angle 0 - 3.60 to get the rotated unit vector
         def _rotate_vector(coords: np.array, angle):
             print(coords,angle)
@@ -68,9 +72,14 @@ class BooleanOperatrions(Scene):
         
         _fade_in_multiple(el1, el2, el3, A, B, C)
         
-        _show_intersection(el1_el2_inter,el1_el2_txt,RIGHT*5,45)
+        _show_intersections_multiple((el1_el2_inter,el1_el2_el3_inter),
+                                     (el1_el2_txt,el1_el2_el3_txt),
+                                     (RIGHT*5,RIGHT * 5 + UP *2.8),
+                                     (45,0))
+       
+       # _show_intersection(el1_el2_inter,el1_el2_txt,RIGHT*5,45)
         
-        _show_intersection(el1_el2_el3_inter,el1_el2_el3_txt,RIGHT * 5 + UP *2.8,0)
+        #_show_intersection(el1_el2_el3_inter,el1_el2_el3_txt,RIGHT * 5 + UP *2.8,0)
 
       
 
