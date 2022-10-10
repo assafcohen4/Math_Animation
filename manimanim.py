@@ -72,25 +72,7 @@ class BooleanOperatrions(Scene):
         
         _show_intersection(el1_el2_el3_inter,el1_el2_el3_txt,RIGHT * 5 + UP *2.8,0)
 
-        # show el1_el2 intersection
-        #self.play(FadeIn(el1_el2_inter))
-        #self.play(el1_el2_inter_copy.animate.move_to(RIGHT * 5).rotate(45))
-
-        
-        #show el1_el2 text
-        #el1_el2_txt.next_to(el1_el2_inter_copy,UP)
-        #self.play(FadeIn(el1_el2_txt))
-        #self.play(FadeOut(el1_el2_inter))
-
-
-        #show el1_el2_el3 intersection
-        #self.play(FadeIn(el1_el2_el3_inter))
-        #self.play(el1_el2_el3_inter_copy.animate.move_to(RIGHT * 5 + UP *2.8))
-
-        #show el1_el2_el3 intersection
-        #el1_el2_el3_txt.next_to(el1_el2_el3_inter_copy,UP)
-        #self.play(FadeIn(el1_el2_el3_txt))
-        #self.play(FadeOut(el1_el2_el3_inter))
+      
 
        
 
