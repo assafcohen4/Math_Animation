@@ -3,7 +3,7 @@ from array import array
 from manim import *
 from math import *
 
-
+"""
 class BraceAnnotation(Scene):
     
     def construct(self):
@@ -18,7 +18,7 @@ class BraceAnnotation(Scene):
         text = Text("{a},{b}".format(a=dot1_coords[0], b=dot1_coords[1]),font='american_typewriter')
         text.next_to(dot1,DOWN)
         self.add(num_pl,dot1,dot2,arrow,text)
-
+"""
 class BooleanOperatrions(Scene):
     
     def construct(self):
@@ -28,19 +28,19 @@ class BooleanOperatrions(Scene):
             for arg in argv:
                 self.play(FadeIn(arg))
 
-        def _display_operation(operation: Mobject, text: MathTex, vector: np.array, rotation: float):
+        def _display_operation(operation: BooleanOperatrions, text: MathTex, vector: np.array, rotation: float, scale: float):
             self.play(FadeIn(operation))
             
-            intersection_copy = operation.copy()
-            self.play(intersection_copy.animate.move_to(vector).rotate(rotation))
+            operation_copy = operation.copy()
+            self.play(operation_copy.animate.move_to(vector).rotate(rotation).scale(scale))
 
-            self.play(FadeIn(text.next_to(intersection_copy,RIGHT)))
+            self.play(FadeIn(text.next_to(operation_copy,RIGHT)))
             self.play(FadeOut(operation))
 
         def _display_multiple_operations(operations: tuple[Mobject], texts: tuple[MathTex],
-        vectors: tuple[np.array],rotations: tuple[float]):
+        vectors: tuple[np.array],rotations: tuple[float], scale: tuple[float]):
             for i in range(len(operations)):
-                _display_operation(operations[i],texts[i],vectors[i],rotations[i])
+                _display_operation(operations[i],texts[i],vectors[i],rotations[i],scale[i])
 
         #Enter a vector np.array([x,y,z]) and a rotation angle 0 - 3.60 to get the rotated unit vector
         def _rotate_vector(coords: np.array, angle):
@@ -49,45 +49,67 @@ class BooleanOperatrions(Scene):
             y2 = coords[0]*sin(angle) + coords[1]*cos(angle)
             return np.array([x2,y2,0])
 
-        TITLE_POS = UP*3.5
-        title1 = MarkupText("Intersection").move_to(TITLE_POS)
-        title2 = MarkupText("Union").move_to(TITLE_POS)
-        title3 = MarkupText("Exclusion").move_to(TITLE_POS)
-        title4 = MarkupText("Difference").move_to(TITLE_POS)
+        intersection = MarkupText("Intersection")
+        union = MarkupText("Union")
+        exclusion = MarkupText("Exclusion")
+        difference = MarkupText("Difference")
 
         el1 = Circle(radius=1.4,fill_color=GREEN,stroke_color = GREEN, fill_opacity = 0.5).shift([0,1,0])
         el2 = el1.copy().set_fill(RED).set_stroke(RED).set_opacity(0.3).shift([1,-1.8,0])
         el3 = el2.copy().set_fill(BLUE).set_stroke(BLUE).set_opacity(0.3).shift([-2,0,0])
 
-        
-
         el1_el2_inter = Intersection(el1,el2).set_stroke(YELLOW).set_fill(YELLOW).set_opacity(0.3)
         el1_el3_inter = Intersection(el1,el3).set_stroke("#00FFFF").set_fill("#00FFFF").set_opacity(0.3)
         el2_el3_inter = Intersection(el2,el3).set_stroke("#FF00FF").set_fill("#FF00FF").set_opacity(0.3)
-
         el1_el2_el3_inter = Intersection(el1,el2,el3).set_stroke(WHITE).set_fill(WHITE).set_opacity(0.3)
- 
+        el1_el2_un = Union(el1,el2).set_stroke(YELLOW).set_fill(YELLOW).set_opacity(0.3)
+        el1_el3_un = Union(el1,el3).set_stroke("#00FFFF").set_fill("#00FFFF").set_opacity(0.3)
+        el2_el3_un = Union(el2,el3).set_stroke("#FF00FF").set_fill("#FF00FF").set_opacity(0.3)
+        el1_el2_el3_un = Union(el1,el2,el3).set_stroke(WHITE).set_fill(WHITE).set_opacity(0.3)
         
         A = Text("A",color=WHITE,font_size=28).move_to(el1,ORIGIN)
         B = Text("B",color=WHITE,font_size=28).move_to(el2,ORIGIN)
         C = Text("C",color=WHITE,font_size=28).move_to(el3,ORIGIN)
 
-        el1_el2_txt = MathTex("A \\cap B")
-        el1_el3_txt = MathTex("A \\cap C")
-        el2_el3_txt = MathTex("B \\cap C")
-        el1_el2_el3_txt = MathTex("A \\cap B \\cap C")
+        el1_el2_inter_txt = MathTex("A \\cap B")
+        el1_el3_inter_txt = MathTex("A \\cap C")
+        el2_el3_inter_txt = MathTex("B \\cap C")
+        el1_el2_el3_inter_txt = MathTex("A \\cap B \\cap C")
 
-        self.play(Write(title1))
+        el1_el2_un_txt = MathTex("A \\cup B")
+        el1_el3_un_txt = MathTex("A \\cup C")
+        el2_el3_un_txt = MathTex("B \\cup C")
+        el1_el2_el3_un_txt = MathTex("A \\cup B \\cup C")
+
+        self.play(FadeIn(intersection))
+        self.play(FadeOut(intersection))
+        
         _fade_in_multiple(el1, el2, el3, A, B, C)
         
         _display_multiple_operations((el1_el2_inter, el1_el3_inter, el2_el3_inter,el1_el2_el3_inter),
-                                     (el1_el2_txt, el1_el3_txt, el2_el3_txt, el1_el2_el3_txt),
+                                     (el1_el2_inter_txt, el1_el3_inter_txt, el2_el3_inter_txt, el1_el2_el3_inter_txt),
                                      (RIGHT*4.8, RIGHT*4.8 - DOWN *3, RIGHT*4.8 + DOWN *3, DOWN*3.2),
-                                     (45,-45, 0, 0))
+                                     (45,-45, 0, 0),(1,1,1,1))
+        
        
-       
+        self.clear()
+        union = MarkupText("Union")
+        self.play(FadeIn(union))
+        self.play(FadeOut(union))
+        
+        self.add(el1,el2,el3,A,B,C)
+
+        _display_multiple_operations((el1_el2_un, el1_el3_un, el2_el3_un,el1_el2_el3_un),
+                                     (el1_el2_un_txt, el1_el3_un_txt, el2_el3_un_txt, el1_el2_el3_un_txt),
+                                     (RIGHT*4.6, RIGHT*4.6 - DOWN *3, RIGHT*4.6 + DOWN *3, DOWN*3.2),
+                                     (45,-45, 0, 0),
+                                     (0.3,0.3,0.3,0.3))
+        
 
 
+
+        
+"""""
 class PointMovingOnShapes(Scene):
     def construct(self):
         cir = Circle()
@@ -95,6 +117,7 @@ class PointMovingOnShapes(Scene):
         self.add(dot,cir)
         self.play(MoveAlongPath(dot,cir),run_time=3)
         self.play(Rotating(dot,about_point=[1,1,1]))
+
 
 class MovingAngle(Scene):
     def construct(self):
@@ -110,3 +133,4 @@ class MovingAngle(Scene):
         self.add(l1,l2,track)
         self.play(track.animate.set_value(90),run_time=10)
    
+"""
