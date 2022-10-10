@@ -28,20 +28,19 @@ class BooleanOperatrions(Scene):
             for arg in argv:
                 self.play(FadeIn(arg))
 
-        
-        def _show_intersection(intersection: Mobject, text: MathTex, vector: np.array, rotation: float):
-            self.play(FadeIn(intersection))
+        def _display_operation(operation: Mobject, text: MathTex, vector: np.array, rotation: float):
+            self.play(FadeIn(operation))
             
-            intersection_copy = intersection.copy()
+            intersection_copy = operation.copy()
             self.play(intersection_copy.animate.move_to(vector).rotate(rotation))
 
-            self.play(FadeIn(text.next_to(intersection_copy,UP)))
-            self.play(FadeOut(intersection))
+            self.play(FadeIn(text.next_to(intersection_copy,RIGHT)))
+            self.play(FadeOut(operation))
 
-        def _show_intersections_multiple(intersections: tuple[Mobject], texts: tuple[MathTex],
+        def _display_multiple_operations(operations: tuple[Mobject], texts: tuple[MathTex],
         vectors: tuple[np.array],rotations: tuple[float]):
-            for i in range(len(intersections)):
-                _show_intersection(intersections[i],texts[i],vectors[i],rotations[i])
+            for i in range(len(operations)):
+                _display_operation(operations[i],texts[i],vectors[i],rotations[i])
 
         #Enter a vector np.array([x,y,z]) and a rotation angle 0 - 3.60 to get the rotated unit vector
         def _rotate_vector(coords: np.array, angle):
@@ -50,15 +49,23 @@ class BooleanOperatrions(Scene):
             y2 = coords[0]*sin(angle) + coords[1]*cos(angle)
             return np.array([x2,y2,0])
 
-        el1 = Circle(radius=1.5,fill_color=GREEN,stroke_color = GREEN, fill_opacity = 0.5).shift([0,1,0])
+        TITLE_POS = UP*3.5
+        title1 = MarkupText("Intersection").move_to(TITLE_POS)
+        title2 = MarkupText("Union").move_to(TITLE_POS)
+        title3 = MarkupText("Exclusion").move_to(TITLE_POS)
+        title4 = MarkupText("Difference").move_to(TITLE_POS)
+
+        el1 = Circle(radius=1.4,fill_color=GREEN,stroke_color = GREEN, fill_opacity = 0.5).shift([0,1,0])
         el2 = el1.copy().set_fill(RED).set_stroke(RED).set_opacity(0.3).shift([1,-1.8,0])
         el3 = el2.copy().set_fill(BLUE).set_stroke(BLUE).set_opacity(0.3).shift([-2,0,0])
 
-        el1_el2_inter = Intersection(el1,el2).set_stroke(YELLOW).set_fill(YELLOW).set_opacity(0.3)
-        el1_el3_inter = Intersection(el1,el3).set_stroke(PURPLE).set_fill(PURPLE).set_opacity(0.3)
-        el2_el3_inter = Intersection(el2,el3).set_stroke(PINK).set_fill(PINK).set_opacity(0.3)
+        
 
-        el1_el2_el3_inter = Intersection(el1,el2,el3).set_stroke(PINK).set_fill(PINK).set_opacity(0.3)
+        el1_el2_inter = Intersection(el1,el2).set_stroke(YELLOW).set_fill(YELLOW).set_opacity(0.3)
+        el1_el3_inter = Intersection(el1,el3).set_stroke("#00FFFF").set_fill("#00FFFF").set_opacity(0.3)
+        el2_el3_inter = Intersection(el2,el3).set_stroke("#FF00FF").set_fill("#FF00FF").set_opacity(0.3)
+
+        el1_el2_el3_inter = Intersection(el1,el2,el3).set_stroke(WHITE).set_fill(WHITE).set_opacity(0.3)
  
         
         A = Text("A",color=WHITE,font_size=28).move_to(el1,ORIGIN)
@@ -69,28 +76,16 @@ class BooleanOperatrions(Scene):
         el1_el3_txt = MathTex("A \\cap C")
         el2_el3_txt = MathTex("B \\cap C")
         el1_el2_el3_txt = MathTex("A \\cap B \\cap C")
-        
+
+        self.play(Write(title1))
         _fade_in_multiple(el1, el2, el3, A, B, C)
         
-        _show_intersections_multiple((el1_el2_inter,el1_el2_el3_inter),
-                                     (el1_el2_txt,el1_el2_el3_txt),
-                                     (RIGHT*5,RIGHT * 5 + UP *2.8),
-                                     (45,0))
+        _display_multiple_operations((el1_el2_inter, el1_el3_inter, el2_el3_inter,el1_el2_el3_inter),
+                                     (el1_el2_txt, el1_el3_txt, el2_el3_txt, el1_el2_el3_txt),
+                                     (RIGHT*4.8, RIGHT*4.8 - DOWN *3, RIGHT*4.8 + DOWN *3, DOWN*3.2),
+                                     (45,-45, 0, 0))
        
-       # _show_intersection(el1_el2_inter,el1_el2_txt,RIGHT*5,45)
-        
-        #_show_intersection(el1_el2_el3_inter,el1_el2_el3_txt,RIGHT * 5 + UP *2.8,0)
-
-      
-
        
-
-        
-        
-
-    
-
-        
 
 
 class PointMovingOnShapes(Scene):
