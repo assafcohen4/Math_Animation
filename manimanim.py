@@ -22,23 +22,27 @@ class BraceAnnotation(Scene):
 class BooleanOperatrions(Scene):
     
     def construct(self):
-        
+        OPACITY = 0.3
         #fade in multiple objects one after another
         def _fade_in_multiple(*argv):
             for arg in argv:
                 self.play(FadeIn(arg))
 
-        def _display_operation(operation: BooleanOperatrions, text: MathTex, vector: np.array, rotation: float, scale: float):
-            self.play(FadeIn(operation))
-            
-            operation_copy = operation.copy()
-            self.play(operation_copy.animate.move_to(vector).rotate(rotation).scale(scale))
+        #the full display of a boolean operation
+       
 
-            self.play(FadeIn(text.next_to(operation_copy,RIGHT)))
-            self.play(FadeOut(operation))
+        #a loop for multiple displays
+        def _display_multiple_operations(operations: tuple[VMobject], texts: tuple[MathTex],vectors: tuple[np.array],
+        rotations: tuple[float], scale: tuple[float]):
+            #an inner function to display a single operation
+            def _display_operation(operation, text, vector, rotation, scale):
+                self.play(FadeIn(operation))
+                
+                operation_copy = operation.copy()
+                self.play(operation_copy.animate.move_to(vector).rotate(rotation).scale(scale))
 
-        def _display_multiple_operations(operations: tuple[Mobject], texts: tuple[MathTex],
-        vectors: tuple[np.array],rotations: tuple[float], scale: tuple[float]):
+                self.play(FadeIn(text.next_to(operation_copy,RIGHT)))
+                self.play(FadeOut(operation))
             for i in range(len(operations)):
                 _display_operation(operations[i],texts[i],vectors[i],rotations[i],scale[i])
 
@@ -49,64 +53,74 @@ class BooleanOperatrions(Scene):
             y2 = coords[0]*sin(angle) + coords[1]*cos(angle)
             return np.array([x2,y2,0])
 
+        
         intersection = MarkupText("Intersection")
         union = MarkupText("Union")
         exclusion = MarkupText("Exclusion")
         difference = MarkupText("Difference")
 
-        el1 = Circle(radius=1.4,fill_color=GREEN,stroke_color = GREEN, fill_opacity = 0.5).shift([0,1,0])
-        el2 = el1.copy().set_fill(RED).set_stroke(RED).set_opacity(0.3).shift([1,-1.8,0])
-        el3 = el2.copy().set_fill(BLUE).set_stroke(BLUE).set_opacity(0.3).shift([-2,0,0])
+        c1 = Circle(radius=1.4,fill_color=GREEN,stroke_color = GREEN, fill_opacity = 0.5).shift([0,1,0])
+        c2 = c1.copy().set_fill(RED).set_stroke(RED).set_opacity(0.3).shift([1,-1.8,0])
+        c3 = c2.copy().set_fill(BLUE).set_stroke(BLUE).set_opacity(0.3).shift([-2,0,0])
 
-        el1_el2_inter = Intersection(el1,el2).set_stroke(YELLOW).set_fill(YELLOW).set_opacity(0.3)
-        el1_el3_inter = Intersection(el1,el3).set_stroke("#00FFFF").set_fill("#00FFFF").set_opacity(0.3)
-        el2_el3_inter = Intersection(el2,el3).set_stroke("#FF00FF").set_fill("#FF00FF").set_opacity(0.3)
-        el1_el2_el3_inter = Intersection(el1,el2,el3).set_stroke(WHITE).set_fill(WHITE).set_opacity(0.3)
-        el1_el2_un = Union(el1,el2).set_stroke(YELLOW).set_fill(YELLOW).set_opacity(0.3)
-        el1_el3_un = Union(el1,el3).set_stroke("#00FFFF").set_fill("#00FFFF").set_opacity(0.3)
-        el2_el3_un = Union(el2,el3).set_stroke("#FF00FF").set_fill("#FF00FF").set_opacity(0.3)
-        el1_el2_el3_un = Union(el1,el2,el3).set_stroke(WHITE).set_fill(WHITE).set_opacity(0.3)
+
+        c1_c2_inter = Intersection(c1,c2,stroke_color=YELLOW, fill_color=YELLOW, fill_opacity=OPACITY)
+
+        c1_c3_inter = Intersection(c1,c3,stroke_color="#00FFFF", fill_color="#00FFFF", fill_opacity=OPACITY)
+        c2_c3_inter = Intersection(c2,c3,stroke_color="#FF00FF", fill_color="#FF00FF", fill_opacity=OPACITY)
+        c1_c2_c3_inter = Intersection(c1,c2,c3,stroke_color=WHITE, fill_color=WHITE, fill_opacity=OPACITY)
         
-        A = Text("A",color=WHITE,font_size=28).move_to(el1,ORIGIN)
-        B = Text("B",color=WHITE,font_size=28).move_to(el2,ORIGIN)
-        C = Text("C",color=WHITE,font_size=28).move_to(el3,ORIGIN)
+        c1_c2_un = Union(c1,c2,stroke_color=YELLOW, fill_color=YELLOW, fill_opacity=OPACITY)
+        c1_c3_un = Union(c1,c3,stroke_color="#00FFFF", fill_color="#00FFFF", fill_opacity=OPACITY)
+        c2_c3_un = Union(c2,c3,stroke_color="#FF00FF", fill_color="#FF00FF", fill_opacity=OPACITY)
+        c1_c2_c3_un = Union(c1,c2,c3,stroke_color=WHITE, fill_color=WHITE, fill_opacity=OPACITY)
+        
+        A = Text("A",color=WHITE,font_size=28).move_to(c1,ORIGIN)
+        B = Text("B",color=WHITE,font_size=28).move_to(c2,ORIGIN)
+        C = Text("C",color=WHITE,font_size=28).move_to(c3,ORIGIN)
 
-        el1_el2_inter_txt = MathTex("A \\cap B")
-        el1_el3_inter_txt = MathTex("A \\cap C")
-        el2_el3_inter_txt = MathTex("B \\cap C")
-        el1_el2_el3_inter_txt = MathTex("A \\cap B \\cap C")
+        c1_c2_inter_txt = MathTex("A \\cap B")
+        c1_c3_inter_txt = MathTex("A \\cap C")
+        c2_c3_inter_txt = MathTex("B \\cap C")
+        c1_c2_c3_inter_txt = MathTex("A \\cap B \\cap C")
 
-        el1_el2_un_txt = MathTex("A \\cup B")
-        el1_el3_un_txt = MathTex("A \\cup C")
-        el2_el3_un_txt = MathTex("B \\cup C")
-        el1_el2_el3_un_txt = MathTex("A \\cup B \\cup C")
+        c1_c2_un_txt = MathTex("A \\cup B")
+        c1_c3_un_txt = MathTex("A \\cup C")
+        c2_c3_un_txt = MathTex("B \\cup C")
+        c1_c2_c3_un_txt = MathTex("A \\cup B \\cup C")
 
+        c1_c2_symdif = MathTex("A \\Delta B")
+        c1_c2_c3_symdif = MathTex("A \\Delta (B \\cup C)")
+
+        
+        #start of scene
         self.play(FadeIn(intersection))
         self.play(FadeOut(intersection))
         
-        _fade_in_multiple(el1, el2, el3, A, B, C)
+        _fade_in_multiple(c1, c2, c3, A, B, C)
         
-        _display_multiple_operations((el1_el2_inter, el1_el3_inter, el2_el3_inter,el1_el2_el3_inter),
-                                     (el1_el2_inter_txt, el1_el3_inter_txt, el2_el3_inter_txt, el1_el2_el3_inter_txt),
+        _display_multiple_operations((c1_c2_inter, c1_c3_inter, c2_c3_inter,c1_c2_c3_inter),
+                                     (c1_c2_inter_txt, c1_c3_inter_txt, c2_c3_inter_txt, c1_c2_c3_inter_txt),
                                      (RIGHT*4.8, RIGHT*4.8 - DOWN *3, RIGHT*4.8 + DOWN *3, DOWN*3.2),
                                      (45,-45, 0, 0),(1,1,1,1))
-        
-       
+          
         self.clear()
-        union = MarkupText("Union")
         self.play(FadeIn(union))
-        self.play(FadeOut(union))
-        
-        self.add(el1,el2,el3,A,B,C)
-
-        _display_multiple_operations((el1_el2_un, el1_el3_un, el2_el3_un,el1_el2_el3_un),
-                                     (el1_el2_un_txt, el1_el3_un_txt, el2_el3_un_txt, el1_el2_el3_un_txt),
+        self.play(FadeOut(union)) 
+        self.add(c1,c2,c3,A,B,C)
+        _display_multiple_operations((c1_c2_un, c1_c3_un, c2_c3_un,c1_c2_c3_un),
+                                     (c1_c2_un_txt, c1_c3_un_txt, c2_c3_un_txt, c1_c2_c3_un_txt),
                                      (RIGHT*4.6, RIGHT*4.6 - DOWN *3, RIGHT*4.6 + DOWN *3, DOWN*3.2),
                                      (45,-45, 0, 0),
-                                     (0.3,0.3,0.3,0.3))
+                                     (0.32,0.32,0.32,0.3))
         
 
+        self.clear()
+        self.play(FadeIn(exclusion))
+        self.play(FadeOut(exclusion)) 
 
+        self.play(FadeIn(c1_c2_symdif))
+        self.add(c1,c2,c3,A,B,C)
 
         
 """""
